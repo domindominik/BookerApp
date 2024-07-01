@@ -23,6 +23,7 @@ public class ReservationModel {
     private Long userId;
     private Long roomId;
     private int hour;
+    private int quantity;
     private LocalDate date;
 
     @Column(nullable = false, updatable = false)
