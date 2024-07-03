@@ -32,21 +32,33 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     @Transactional
     public ReservationModel saveReservation(ReservationModel reservation){
-        if (!userRepository.existsById(reservation.getUserId())){
-            throw new RuntimeException("User not found");
-        }
-        if (!roomRepository.existsById(reservation.getRoomId())){
-            throw new RuntimeException("Room not found");
-        }
-        boolean exists = reservationRepository.existsByRoomIdAndDateAndHour(
-                reservation.getRoomId(), reservation.getDate(), reservation.getHour()
-        );
-        if (exists) {
-            throw new RuntimeException("The room is already booked for the specified time.");
-        }
+        validateReservation(reservation);
+
         ReservationModel savedReservation = reservationRepository.save(reservation);
         httpService.sendReservation(savedReservation);
         return savedReservation;
+    }
+
+    private void validateReservation(ReservationModel reservation) {
+        if (!userRepository.existsById(reservation.getUserId())) {
+            throw new RuntimeException("User not found");
+        }
+        if (!roomRepository.existsById(reservation.getRoomId())) {
+            throw new RuntimeException("Room not found");
+        }
+        if (reservation.getQuantity() < 1 || reservation.getQuantity() > 3) {
+            throw new RuntimeException("Reservation duration must be between 1 and 3 hours");
+        }
+        boolean exists = reservationRepository.existsOverlappingReservation(
+                reservation.getRoomId(), reservation.getDate(), reservation.getHour(), reservation.getQuantity());
+        if (exists) {
+            throw new RuntimeException("The room is already booked for the specified time.");
+        }
+        Integer totalHoursBooked = reservationRepository.getTotalBookingHoursForUser(
+                reservation.getUserId(), reservation.getDate());
+        if (totalHoursBooked != null && (totalHoursBooked + reservation.getQuantity()) > 3) {
+            throw new RuntimeException("User has exceeded the daily booking limit of 3 hours");
+        }
     }
 
     @Override
