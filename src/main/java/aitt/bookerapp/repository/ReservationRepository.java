@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Repository
 public interface ReservationRepository extends JpaRepository <ReservationModel, Long> {
@@ -21,4 +22,6 @@ public interface ReservationRepository extends JpaRepository <ReservationModel, 
             "WHERE r.userId = :userId " +
             "AND r.date = :date")
     Integer getTotalBookingHoursForUser(Long userId, LocalDate date);
+
+    List<ReservationModel> findByUserId(Long userId);
 }

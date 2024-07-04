@@ -8,4 +8,5 @@ public interface UserService {
     UserModel getUserById(Long id);
     UserModel saveUser(UserModel user);
     void deleteUserById(Long id);
+    boolean existsById(Long id);
 }
