@@ -24,4 +24,5 @@ public interface ReservationRepository extends JpaRepository <ReservationModel, 
     Integer getTotalBookingHoursForUser(Long userId, LocalDate date);
 
     List<ReservationModel> findByUserId(Long userId);
+    List<ReservationModel> findByRoomId(Long roomId);
 }
