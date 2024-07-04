@@ -30,6 +30,11 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
+    public List<ReservationModel> getReservationsByRoomId(Long roomId) {
+        return reservationRepository.findByRoomId(roomId);
+    }
+
+    @Override
     public ReservationModel getReservationById(Long id){
         return reservationRepository.findById(id).orElse(null);
     }

@@ -13,7 +13,6 @@ import java.util.List;
 public class RoomServiceImpl implements RoomService {
 
     private final RoomRepository roomRepository;
-    private final HttpService httpService;
 
     @Override
     public List<RoomModel> getAllRooms(){
@@ -37,5 +36,10 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public void deleteRoomById(Long id) {
         roomRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean existsRoomById(Long id) {
+        return roomRepository.existsById(id);
     }
 }
