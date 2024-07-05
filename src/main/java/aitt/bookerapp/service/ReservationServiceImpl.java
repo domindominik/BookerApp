@@ -1,5 +1,6 @@
 package aitt.bookerapp.service;
 
+import aitt.bookerapp.model.OfficeModel;
 import aitt.bookerapp.model.ReservationModel;
 import aitt.bookerapp.repository.ReservationRepository;
 import aitt.bookerapp.repository.RoomRepository;
@@ -18,6 +19,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final HttpService httpService;
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
+    private final OfficeService officeService;
 
     @Override
     public List<ReservationModel> getAllReservations() {
@@ -68,6 +70,21 @@ public class ReservationServiceImpl implements ReservationService {
                 reservation.getUserId(), reservation.getDate());
         if (totalHoursBooked != null && (totalHoursBooked + reservation.getQuantity()) > 3) {
             throw new RuntimeException("User has exceeded the daily booking limit of 3 hours");
+        }
+        validateOfficeHours(reservation);
+    }
+
+    private void validateOfficeHours(ReservationModel reservation) {
+        OfficeModel officeHours = officeService.getHours();
+        if (officeHours == null) {
+            throw new RuntimeException("Office hours not set.");
+        }
+        int openHours = officeHours.getOpenTime().getHour();
+        int closeHours = officeHours.getCloseTime().getHour();
+        int reservationStartHour = reservation.getHour();
+        int reservationEndHour = reservation.getHour() + reservation.getQuantity();
+        if(reservationStartHour < openHours || reservationEndHour > closeHours) {
+            throw new RuntimeException("Reservation is outside of office hours.");
         }
     }
 
