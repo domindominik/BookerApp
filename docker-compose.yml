@@ -10,6 +10,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/roombooking
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
+      MAILGUN_API_KEY: E92e7fc8421c6bd3fee148d3e963392b-8a084751-a9f5213e
+      MAILGUN_DOMAIN: sandbox4f35c91f6180485ca5d5c5e3d838becf.mailgun.org
     depends_on:
       db:
         condition: service_healthy

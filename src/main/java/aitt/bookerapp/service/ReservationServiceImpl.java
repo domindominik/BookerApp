@@ -2,6 +2,7 @@ package aitt.bookerapp.service;
 
 import aitt.bookerapp.model.OfficeModel;
 import aitt.bookerapp.model.ReservationModel;
+import aitt.bookerapp.model.UserModel;
 import aitt.bookerapp.repository.ReservationRepository;
 import aitt.bookerapp.repository.RoomRepository;
 import aitt.bookerapp.repository.UserRepository;
@@ -20,6 +21,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
     private final OfficeService officeService;
+    private final EmailService emailService;
 
     @Override
     public List<ReservationModel> getAllReservations() {
@@ -45,9 +47,18 @@ public class ReservationServiceImpl implements ReservationService {
     @Transactional
     public ReservationModel saveReservation(ReservationModel reservation){
         validateReservation(reservation);
-
         ReservationModel savedReservation = reservationRepository.save(reservation);
         httpService.sendReservation(savedReservation);
+        UserModel user = userRepository.findById(reservation.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        String userEmail = user.getEmail();
+        String subject = "Reservation Confirmation";
+        String text = "Your reservation has been confirmed. Reservation details: " + savedReservation.toString();
+        try {
+            emailService.sendSimpleMessage(userEmail, subject, text);
+        } catch (Exception e) {
+            System.err.println("Failed to send email confirmation: " + e.getMessage());
+        }
         return savedReservation;
     }
 
