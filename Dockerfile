@@ -11,7 +11,7 @@ WORKDIR /app
 COPY . .
 
 # Build the application
-RUN mvn clean package
+RUN mvn clean package -X
 
 # Expose the port the application runs on
 EXPOSE 8080
