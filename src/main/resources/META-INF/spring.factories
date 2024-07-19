@@ -1,0 +1,11 @@
+# Enable auto-configuration for Spring Boot
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,\
+  org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration,\
+  org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration,\
+  org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoConfiguration,\
+  org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration
+
+# Context initializers
+org.springframework.context.ApplicationContextInitializer=\
+  org.springframework.boot.context.config.ConfigFileApplicationContextInitializer
